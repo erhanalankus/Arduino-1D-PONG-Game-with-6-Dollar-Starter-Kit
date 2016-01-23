@@ -87,7 +87,7 @@ void loop()
 	{		
 		CheckGoalConditions();
 		DetermineNextPosition();
-		ShowBallInCurrentPosition();
+		MoveBallToNextPosition();
 
 		previousMillis = currentMillis;
 	}
@@ -144,7 +144,7 @@ void ToggleBallDirection()
 	millisecondsPerLED -= 50; //This increases the speed at every hit. Increase this amount for more speed. I think it would be better if the decrease amount got smaller with every hit. Maybe you can improve this and make a pull request?
 }
 
-void ShowBallInCurrentPosition()      //Moves the ball one spot.
+void MoveBallToNextPosition()      //Moves the ball one spot.
 {
 	previousPosition = currentPosition;
 	digitalWrite(previousPosition, 0);
@@ -179,6 +179,7 @@ void CheckGoalConditions()
 
 void ScoreForPlayer(int playerWhoScored)
 {
+	isInputAllowed = false;
 	FlashAllLEDs(10, 0);
 	if (playerWhoScored == 1)
 	{
@@ -320,4 +321,3 @@ void FlashAllLEDs(int blinkCount, int player) //Second parameter(int player) is 
 		delay(25);
 	}
 }
-
