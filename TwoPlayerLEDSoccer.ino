@@ -12,7 +12,7 @@
 | [ ]RST                   MOSI/11[ ]~|
 | [ ]3V3    +---+               10[ ]~|
 | [ ]5v     | A |                9[ ]~|
-| [ ]GND   -| R |-               8[ ] |>--->4 TO 13 ARE FOR LEDS. SEE THE COMMENTS IN THE SETUP METHOD 
+| [ ]GND   -| R |-               8[ ] |>--->4 TO 13 ARE FOR LEDS. SEE THE COMMENTS IN THE SETUP METHOD
 | [ ]GND   -| D |-                    |
 | [ ]Vin   -| U |-               7[ ] |
 |          -| I |-               6[ ]~|
@@ -46,7 +46,10 @@ const int buttonPlayerTwo = 2;
 int scoreOfPlayerOne = 0;
 int scoreOfPlayerTwo = 0;
 
-unsigned long millisecondsPerLED = 500; //Initial game speed. Decrease this for faster initial speed. You should also change the last line of ShowScores() when you change this.
+const unsigned long initialMillisecondsPerLED = 500;
+const unsigned long initialDeltaMillisecondsPerLED = 50;
+unsigned long millisecondsPerLED = initialMillisecondsPerLED;
+unsigned long deltaMillisecondsPerLED = initialDeltaMillisecondsPerLED;
 unsigned long currentMillis = 0;
 unsigned long previousMillis = 0;
 
@@ -83,8 +86,8 @@ void loop()
 {
 	ListenForInput();
 	currentMillis = millis();
-	if (currentMillis - previousMillis >= millisecondsPerLED)
-	{		
+	if (currentMillis - previousMillis >= millisecondsPerLED)  //If you don't understand this, see: https://www.arduino.cc/en/Tutorial/BlinkWithoutDelay
+	{
 		CheckGoalConditions();
 		DetermineNextPosition();
 		MoveBallToNextPosition();
@@ -105,6 +108,7 @@ void ListenForInput()    //If you don't understand this method. See: https://www
 			if (currentPosition == playerOne)
 			{
 				ToggleBallDirection();
+				IncreaseSpeed();
 			}
 			else
 			{
@@ -120,6 +124,7 @@ void ListenForInput()    //If you don't understand this method. See: https://www
 			if (currentPosition == playerTwo)
 			{
 				ToggleBallDirection();
+				IncreaseSpeed();
 			}
 			else
 			{
@@ -127,21 +132,22 @@ void ListenForInput()    //If you don't understand this method. See: https://www
 			}
 		}
 		lastButtonStatePlayerTwo = buttonStatePlayerTwo;
-	}	
+	}
 }
 
 void ToggleBallDirection()
 {
-	if (willTheBallGoTowardsPlayerTwo == true)
-	{
-		willTheBallGoTowardsPlayerTwo = false;
-	}
-	else
-	{
-		willTheBallGoTowardsPlayerTwo = true;
-	}
+	willTheBallGoTowardsPlayerTwo = !willTheBallGoTowardsPlayerTwo;
 	isInputAllowed = false;   //Only one direction change per frame is allowed for consistent gameplay.
-	millisecondsPerLED -= 50; //This increases the speed at every hit. Increase this amount for more speed. I think it would be better if the decrease amount got smaller with every hit. Maybe you can improve this and make a pull request?
+}
+
+void IncreaseSpeed()
+{
+	millisecondsPerLED -= deltaMillisecondsPerLED;
+	if (deltaMillisecondsPerLED > 5)  //Because of this, it takes a little more time to reach to an insane speed. Adjust or remove this if rounds become too long.
+	{
+		deltaMillisecondsPerLED -= 5; 
+	}
 }
 
 void MoveBallToNextPosition()      //Moves the ball one spot.
@@ -150,7 +156,7 @@ void MoveBallToNextPosition()      //Moves the ball one spot.
 	digitalWrite(previousPosition, 0);
 	currentPosition = currentPosition + deltaPosition;
 	digitalWrite(currentPosition, 1);
-	isInputAllowed = true;            //Unlocking part of only one direction change per frame limitation.
+	isInputAllowed = true;
 }
 
 void DetermineNextPosition()
@@ -180,7 +186,7 @@ void CheckGoalConditions()
 void ScoreForPlayer(int playerWhoScored)
 {
 	isInputAllowed = false;
-	FlashAllLEDs(10, 0);
+	FlashAllLEDs(1, 0);
 	if (playerWhoScored == 1)
 	{
 		scoreOfPlayerOne++;
@@ -190,82 +196,60 @@ void ScoreForPlayer(int playerWhoScored)
 	{
 		scoreOfPlayerTwo++;
 		ShowScores(2);
-	}	
+	}
 	CheckEndGame();
 }
 
-void CheckEndGame() 
-{	
-		if (scoreOfPlayerOne == 3)
-		{
-			EndGameCeremonyFor(1);
-		}
-		if(scoreOfPlayerTwo == 3)
-		{
-			EndGameCeremonyFor(2);
-		}	
+void CheckEndGame()
+{
+	if (scoreOfPlayerOne == 3)
+	{
+		EndGameCeremonyFor(1);
+	}
+	if (scoreOfPlayerTwo == 3)
+	{
+		EndGameCeremonyFor(2);
+	}
 }
 
-void ShowScores(int playerCurrentlyScored) //I am ashamed of this method.
+void ShowScores(int playerCurrentlyScored)
 {
-	int i = 0;
-	int j = 0;
-	int s1 = scoreOfPlayerOne;
-	int s2 = scoreOfPlayerTwo;
-	int scoreboard[6];         //This array will contain the pin numbers to be lit to show the score. The unused array slots will contain the pin number of the player led who recently scored so her player led will be lit with the score.
-
 	if (playerCurrentlyScored == 1)
 	{
-		for (int i = 0; i < 6; i++)
-		{
-			scoreboard[i] = 12; //This is to ensure LED PlayerOne will be lit with the score.
-		}
-	}
-	else if (playerCurrentlyScored == 2)
-	{
-		for (int i = 0; i < 6; i++)
-		{
-			scoreboard[i] = 5; //This is to ensure LED PlayerTwo will be lit with the score.
-		}
-	}
-	while (s1 > 0)             //These two while loops fill the array with the pin numbers to be lit to show the score.
-	{
-		scoreboard[i] = 11 - j;
-		i++;
-		j++;
-		s1--;
-	}
-	j = 0;
-	while (s2 > 0)
-	{
-		scoreboard[i] = 6 + j;
-		i++;
-		j++;
-		s2--;
-	}
-	for (int i = 0; i < 6; i++) //This for loop lights up the leds for scoreboard display
-	{
-		digitalWrite(scoreboard[i], 1);
-	}
-	delay(3000);                //Are three seconds enough for players to process the score?
-
-	if (playerCurrentlyScored == 1) //Sets starting position for the next round.
-	{
+		digitalWrite(playerOne, 1);
 		currentPosition = playerOne;
 		willTheBallGoTowardsPlayerTwo = true;
 	}
 	else if (playerCurrentlyScored == 2)
 	{
+		digitalWrite(playerTwo, 1);
 		currentPosition = playerTwo;
 		willTheBallGoTowardsPlayerTwo = false;
 	}
-	FlashAllLEDs(4, 0);
-	millisecondsPerLED = 500;  //Sets the speed to initial value at the beginning of each round.
+
+	for (int i = 0; i < scoreOfPlayerOne; i++) //We use the six LEDs in the middle to show score. Each player has three green LEDs to show score. This is why three goals win the game :)
+	{
+		digitalWrite((11 - i), 1);
+	}
+	for (int i = 0; i < scoreOfPlayerTwo; i++)
+	{
+		digitalWrite((6 + i), 1);
+	}
+
+	delay(3000);                //Are three seconds enough for players to process the score?	
+	ResetValuesForNextRound();
+}
+
+void ResetValuesForNextRound() 
+{
+	FlashAllLEDs(1, 0);
+	millisecondsPerLED = initialMillisecondsPerLED;            //Sets speed to initial value at the beginning of each round.
+	deltaMillisecondsPerLED = initialDeltaMillisecondsPerLED;  //Sets delta speed to initial value at the beginning of each round.
 }
 
 void EndGameCeremonyFor(int winner)
 {
-	FlashAllLEDs(25, winner);
+	FlashAllLEDs(50, winner);
 	TurnOffAllLEDsForPlayer(0);
 	scoreOfPlayerOne = 0;
 	scoreOfPlayerTwo = 0;
@@ -283,7 +267,7 @@ void TurnOnAllLEDsForPlayer(int player)
 	}
 	if (player != 2)          //When this method is called with (1), only these pins(player one's) will turn on
 	{
-		digitalWrite(9, 1); 
+		digitalWrite(9, 1);
 		digitalWrite(10, 1);
 		digitalWrite(11, 1);
 		digitalWrite(12, 1);
@@ -316,8 +300,9 @@ void FlashAllLEDs(int blinkCount, int player) //Second parameter(int player) is 
 	for (int i = 0; i < blinkCount; i++)
 	{
 		TurnOnAllLEDsForPlayer(player);
-		delay(25);
+		delay(35);
 		TurnOffAllLEDsForPlayer(player);
-		delay(25);
+		delay(35);
 	}
 }
+
