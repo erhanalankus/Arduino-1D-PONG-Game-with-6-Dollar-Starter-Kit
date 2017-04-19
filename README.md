@@ -10,15 +10,8 @@ https://youtu.be/jLHuaxJLStk
 
 <img src="http://i.imgur.com/qmDUGQw.jpg"/>
 
-<img src="http://i.imgur.com/gdAhzX2.jpg"/>
-
-<img src="http://i.imgur.com/MalRrcp.jpg"/>
-
-<img src="http://i.imgur.com/VKcLwhW.jpg"/>
-
 <img src="http://i.imgur.com/UZ1gtew.jpg"/>
 
-<img src="http://i.imgur.com/8v6OdrK.jpg"/>
 
 
 
