@@ -10,6 +10,7 @@ https://youtu.be/jLHuaxJLStk
 
 # Photos
 
+Use minumum 220 ohm resistors for LEDs, 10k ohm resistors for the buttons.
 <img src="https://i.imgur.com/5oahTsd.png"/>
 
 <img src="http://i.imgur.com/qmDUGQw.jpg"/>
