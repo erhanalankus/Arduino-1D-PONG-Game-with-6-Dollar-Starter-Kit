@@ -10,6 +10,8 @@ https://youtu.be/jLHuaxJLStk
 
 # Photos
 
+<img src="https://i.imgur.com/5oahTsd.png"/>
+
 <img src="http://i.imgur.com/qmDUGQw.jpg"/>
 
 <img src="http://i.imgur.com/UZ1gtew.jpg"/>
