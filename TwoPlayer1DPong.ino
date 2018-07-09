@@ -1,35 +1,3 @@
-/*
-+-----+
-+----[PWR]-------------------| USB |--+    The players are kicking a ball towards each other,
-|                            +-----+  |    trying to score. You must push your button when the
-|         GND/RST2  [ ][ ]            |    light is on your player. If you miss, other player
-|       MOSI2/SCK2  [ ][ ]  A5/SCL[ ] |    scores a goal. If you press your button when the ball
-|          5V/MISO2 [ ][ ]  A4/SDA[ ] |    isn't on your player, other player scores a goal.
-|                             AREF[ ] |
-|                              GND[ ] |
-| [ ]N/C                    SCK/13[G] |    Imagine the goal of Player One here
-| [ ]v.ref                 MISO/12[P] |    Imagine Player One standing here
-| [ ]RST                   MOSI/11[ ]~|
-| [ ]3V3    +---+               10[ ]~|
-| [ ]5v     | A |                9[ ]~|
-| [ ]GND   -| R |-               8[ ] |>--->4 TO 13 ARE FOR LEDS. SEE THE COMMENTS IN THE SETUP METHOD
-| [ ]GND   -| D |-                    |
-| [ ]Vin   -| U |-               7[ ] |
-|          -| I |-               6[ ]~|
-| [ ]A0    -| N |-               5[P]~|    Imagine Player Two standing here
-| [ ]A1    -| O |-               4[G] |    Imagine the goal of Player Two here
-| [ ]A2     +---+           INT1/3[ ]~|----------------->PUSHBUTTON FOR PLAYER ONE
-| [ ]A3                     INT0/2[ ] |----------------->PUSHBUTTON FOR PLAYER TWO
-| [ ]A4/SDA  RST SCK MISO     TX>1[ ] |    Three goals win the game. Ball speed increases with
-| [ ]A5/SCL  [ ] [ ] [ ]      RX<0[ ] |    each hit.
-|            [ ] [ ] [ ]              |
-|  UNO_R3    GND MOSI 5V  ____________/
-\_______________________/
-
-http://busyducks.com/ascii-art-arduinos
-
-*/
-
 /* Created with Visual Studio 2015 using Visual Micro extension http://www.visualmicro.com/ */
 
 bool willTheBallGoTowardsPlayerTwo = true;
