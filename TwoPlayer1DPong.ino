@@ -41,7 +41,7 @@ void setup() {
 	pinMode(11, 1);
 	pinMode(12, 1);
 	pinMode(13, 1);
-	/*Connect pins 4 to 13 to 220ohm resistors, connect the LEDs' longer legs(+) to the resistors,
+	/*Connect pins 4 to 13 to 220ohm(or higher) resistors, connect the LEDs' longer legs(+) to the resistors,
 	  connect the other legs(-) of the LEDs' to ground.
 	  I recommend red LEDs for 4 and 13(Goals), yellow LEDs for 5 and 12(Players), green LEDs for other pins(Field).
 	*/
@@ -64,7 +64,7 @@ void loop()
 	}
 }
 
-void ListenForInput()    //If you don't understand this method. See: https://www.arduino.cc/en/Tutorial/StateChangeDetection
+void ListenForInput()    //If you don't understand this method, see: https://www.arduino.cc/en/Tutorial/StateChangeDetection
 {
 	buttonStatePlayerOne = digitalRead(buttonPlayerOne);
 	buttonStatePlayerTwo = digitalRead(buttonPlayerTwo);
